@@ -80,3 +80,17 @@ def insert_ip_address_data(cursor, ip_address_id, ip_address, network_id):
     data_network_insert = """ INSERT INTO ip_addresses(ip_address_id,ip_address, network_id) VALUES (%s,%s,%s)"""
     network_record = ip_address_id, ip_address, network_id
     cursor.execute(data_network_insert, network_record)
+
+
+# possible improvement: make blank repeating container info
+def select_container_info(cursor):
+    command = (
+        """
+        SELECT c.container_name, c.cpu, c.memory_usage, c.created_at, c.status, i.ip_address
+        FROM containers AS c
+        INNER JOIN network AS n
+        ON c.container_name = n.container_name
+        INNER JOIN ip_addresses AS i
+        ON n.network_id = i.network_id
+        """)
+    cursor.execute(command)

@@ -14,11 +14,13 @@ def main():
     database_controller.drop_all_tables()
     database_controller.create_all_tables()
 
-    parsed_data = Utils.read_json_from_file()
-    database_controller.iterate_containers(parsed_data, database_controller)
+    parsed_data = Utils.read_json_file()
+    if parsed_data is not None:
 
-    # selecting container info and it´s ip addresses
-    database_controller.select_container_info()
+        database_controller.iterate_containers(parsed_data)
+
+        # selecting container info and it´s ip addresses
+        database_controller.select_container_info()
 
     cursor.close()
 

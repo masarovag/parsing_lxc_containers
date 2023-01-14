@@ -5,7 +5,13 @@ import dateutil.parser
 
 class Utils:
     @staticmethod
-    def read_json_from_file():
+    def read_dictionary(dictionary, key):
+        if dictionary is None:
+            return None
+        return dictionary[key]
+
+    @staticmethod
+    def read_json_file():
         with open("sample-data.json") as x:
             data = json.load(x)
         return data

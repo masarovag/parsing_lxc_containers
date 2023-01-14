@@ -93,23 +93,37 @@ class PostgresDatabaseController:
             """)
         self.cursor.execute(command)
 
-    def iterate_containers(self, parsed_data, database_controller):
+    def iterate_containers(self, parsed_data):
         ip_address_inc_id = 0
         network_inc_id = 0
         for container in parsed_data:
+            if container is None:
+                continue
             created_at = Utils.retrieve_time(container["created_at"])
+
             state = container["state"]
+
             if state is None:
-                database_controller.insert_container_data(container["name"], created_at, container["status"], None,
-                                                          None)
+                self.insert_container_data(container["name"], created_at, container["status"], None,
+                                           None)
             else:
-                database_controller.insert_container_data(container["name"], created_at, container["status"],
-                                                          state["cpu"]["usage"], state["memory"]["usage"])
+                self.insert_container_data(container["name"], created_at, container["status"],
+                                           Utils.read_dictionary(state["cpu"], "usage"),
+                                           Utils.read_dictionary(state["memory"], "usage"))
+
+                if state["network"] is None:
+                    continue
+
                 for network_id in state["network"]:
-                    database_controller.insert_network_data(network_inc_id, network_id, container["name"])
+                    self.insert_network_data(network_inc_id, network_id, container["name"])
                     network = state["network"][network_id]
+                    if network is None:
+                        continue
+
                     for address in network["addresses"]:
-                        database_controller.insert_ip_address_data(ip_address_inc_id, address["address"],
-                                                                   network_inc_id)
+                        if address is None:
+                            continue
+                        self.insert_ip_address_data(ip_address_inc_id, address["address"],
+                                                    network_inc_id)
                         ip_address_inc_id += 1
                     network_inc_id += 1

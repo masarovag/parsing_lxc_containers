@@ -1,5 +1,6 @@
 import psycopg2 as pg2
 
+from container_iterator import ContainerIterator
 from postgres_database_controller import PostgresDatabaseController
 from utilities import Utils
 
@@ -10,15 +11,15 @@ def main():
     cursor = conn.cursor()
     database_controller = PostgresDatabaseController(cursor)
 
+    container_iterator = ContainerIterator(database_controller)
+
     # for testing
     database_controller.drop_all_tables()
     database_controller.create_all_tables()
 
     parsed_data = Utils.read_json_file()
     if parsed_data is not None:
-
-        database_controller.iterate_containers(parsed_data)
-
+        container_iterator.iterate_containers(parsed_data)
         # selecting container info and it´s ip addresses
         database_controller.select_container_info()
 

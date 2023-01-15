@@ -1,9 +1,9 @@
 import json
-
 import dateutil.parser
 
 
 class Utils:
+    #check None dictionary value
     @staticmethod
     def read_dictionary(dictionary, key):
         if dictionary is None:

@@ -1,6 +1,3 @@
-from utilities import Utils
-
-
 class PostgresDatabaseController:
 
     def __init__(self, cursor):
